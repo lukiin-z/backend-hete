@@ -6,9 +6,13 @@ API REST para cadastro de especialidades, médicos, pacientes e consultas. O pro
 
 - CRUD de especialidades, médicos, pacientes e consultas;
 - filtros de consultas por médico e por paciente;
-- validação dos dados recebidos;
-- respostas `404` para recursos inexistentes;
+- DTOs de entrada e saída, sem expor diretamente as entidades JPA;
+- validação de dados, datas futuras e regras de negócio;
+- bloqueio de choque de horário para médico ou paciente;
+- fluxo de status controlado (`agendada → confirmada → realizada` ou cancelamento);
+- respostas de erro padronizadas para validação, conflitos e recursos inexistentes;
 - persistência local em H2;
+- massa de demonstração opcional no perfil `dev`;
 - CORS configurável por variável de ambiente.
 
 ## Requisitos
@@ -25,6 +29,12 @@ cd backend-hete
 ```
 
 No Windows, use `mvnw.cmd spring-boot:run`. A API inicia em `http://localhost:8080` e o console H2 fica em `http://localhost:8080/h2-console`.
+
+Para iniciar com médicos, pacientes e consultas de demonstração:
+
+```bash
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
 Configuração padrão do H2:
 
@@ -58,7 +68,8 @@ O banco é criado em `data/` e não é versionado.
 | `GET` | `/consultas/medico/{id}` | Filtra por médico |
 | `GET` | `/consultas/paciente/{id}` | Filtra por paciente |
 | `POST` | `/consultas` | Agenda uma consulta |
-| `PUT` | `/consultas/{id}` | Atualiza uma consulta |
+| `PUT` | `/consultas/{id}` | Atualiza parcialmente os dados da consulta |
+| `PATCH` | `/consultas/{id}/status` | Executa uma transição de status |
 | `DELETE` | `/consultas/{id}` | Exclui uma consulta |
 
 Os status aceitos são `agendada`, `confirmada`, `cancelada` e `realizada`.
@@ -69,14 +80,31 @@ Médico e paciente devem existir antes do agendamento:
 
 ```json
 {
-  "medico": { "id": 1 },
-  "paciente": { "id": 1 },
+  "medicoId": 1,
+  "pacienteId": 1,
   "dataHora": "2026-08-20T10:00:00",
-  "status": "agendada",
   "valor": 250.00,
   "observacoes": "Consulta de rotina"
 }
 ```
+
+Uma nova consulta sempre nasce como `agendada`. Para confirmar:
+
+```http
+PATCH /consultas/1/status
+Content-Type: application/json
+
+{ "status": "confirmada" }
+```
+
+Transições permitidas:
+
+| Status atual | Próximos status |
+| --- | --- |
+| `agendada` | `confirmada` ou `cancelada` |
+| `confirmada` | `realizada` ou `cancelada` |
+| `realizada` | estado final |
+| `cancelada` | estado final |
 
 ## Configuração
 
@@ -100,6 +128,7 @@ src/
 │   ├── java/com/fiap/ec/backend_consultas/
 │   │   ├── config/
 │   │   ├── controller/
+│   │   ├── dto/
 │   │   ├── exception/
 │   │   ├── model/
 │   │   ├── repository/
