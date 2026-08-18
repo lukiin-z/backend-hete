@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "consultas")
@@ -48,6 +49,8 @@ public class Consulta {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;
 
+    @Size(max = 1000)
+    @Column(length = 1000)
     private String observacoes;
 
     public Consulta() {

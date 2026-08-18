@@ -2,21 +2,26 @@ package com.fiap.ec.backend_consultas.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.fiap.ec.backend_consultas.model.Consulta;
+import com.fiap.ec.backend_consultas.dto.ConsultaCreateRequest;
+import com.fiap.ec.backend_consultas.dto.ConsultaResponse;
+import com.fiap.ec.backend_consultas.dto.ConsultaUpdateRequest;
+import com.fiap.ec.backend_consultas.dto.StatusUpdateRequest;
 import com.fiap.ec.backend_consultas.service.ConsultaService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/consultas")
@@ -29,24 +34,31 @@ public class ConsultaController {
     }
 
     @GetMapping
-    public List<Consulta> listar() {
-        return service.listar();
+    public List<ConsultaResponse> listar() {
+        return service.listar().stream().map(ConsultaResponse::from).toList();
     }
 
     @GetMapping("/{id}")
-    public Consulta buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public ConsultaResponse buscarPorId(@PathVariable Long id) {
+        return ConsultaResponse.from(service.buscarPorId(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Consulta criar(@Valid @RequestBody Consulta consulta) {
-        return service.salvar(consulta);
+    public ConsultaResponse criar(@Valid @RequestBody ConsultaCreateRequest request) {
+        return ConsultaResponse.from(service.criar(request));
     }
 
     @PutMapping("/{id}")
-    public Consulta atualizar(@PathVariable Long id, @Valid @RequestBody Consulta consulta) {
-        return service.atualizar(id, consulta);
+    public ConsultaResponse atualizar(@PathVariable Long id,
+                                      @Valid @RequestBody ConsultaUpdateRequest request) {
+        return ConsultaResponse.from(service.atualizar(id, request));
+    }
+
+    @PatchMapping("/{id}/status")
+    public ConsultaResponse atualizarStatus(@PathVariable Long id,
+                                            @Valid @RequestBody StatusUpdateRequest request) {
+        return ConsultaResponse.from(service.atualizarStatus(id, request.status()));
     }
 
     @DeleteMapping("/{id}")
@@ -56,12 +68,12 @@ public class ConsultaController {
     }
 
     @GetMapping("/medico/{medicoId}")
-    public List<Consulta> listarPorMedico(@PathVariable Long medicoId) {
-        return service.listarPorMedico(medicoId);
+    public List<ConsultaResponse> listarPorMedico(@PathVariable Long medicoId) {
+        return service.listarPorMedico(medicoId).stream().map(ConsultaResponse::from).toList();
     }
 
     @GetMapping("/paciente/{pacienteId}")
-    public List<Consulta> listarPorPaciente(@PathVariable Long pacienteId) {
-        return service.listarPorPaciente(pacienteId);
+    public List<ConsultaResponse> listarPorPaciente(@PathVariable Long pacienteId) {
+        return service.listarPorPaciente(pacienteId).stream().map(ConsultaResponse::from).toList();
     }
 }
