@@ -1,6 +1,8 @@
 package com.fiap.ec.backend_consultas.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "medicos")
@@ -8,12 +10,19 @@ public class Medico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
+    @Column(nullable = false)
     private String nome;
+    @NotBlank
+    @Column(nullable = false, unique = true)
     private String crm;
-    @ManyToOne
-    @JoinColumn(name = "especialidade_id")
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "especialidade_id", nullable = false)
     private Especialidade especialidade;
-    private Boolean ativo;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean ativo = true;
 
     public Medico() {
     }

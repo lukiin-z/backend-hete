@@ -2,6 +2,7 @@ package com.fiap.ec.backend_consultas.service;
 
 import com.fiap.ec.backend_consultas.model.Paciente;
 import com.fiap.ec.backend_consultas.repository.PacienteRepository;
+import com.fiap.ec.backend_consultas.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class PacienteService {
 
     public Paciente buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Paciente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente", id));
     }
 
     public Paciente atualizar(Long id, Paciente pacienteAtualizado){

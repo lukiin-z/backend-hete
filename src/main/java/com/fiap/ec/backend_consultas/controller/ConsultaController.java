@@ -2,7 +2,6 @@ package com.fiap.ec.backend_consultas.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,13 +10,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 
 import com.fiap.ec.backend_consultas.model.Consulta;
 import com.fiap.ec.backend_consultas.service.ConsultaService;
 
 @RestController
 @RequestMapping("/consultas")
-@CrossOrigin
 public class ConsultaController {
 
     private final ConsultaService service;
@@ -37,18 +39,20 @@ public class ConsultaController {
     }
 
     @PostMapping
-    public Consulta criar(@RequestBody Consulta consulta) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Consulta criar(@Valid @RequestBody Consulta consulta) {
         return service.salvar(consulta);
     }
 
     @PutMapping("/{id}")
-    public Consulta atualizar(@PathVariable Long id, @RequestBody Consulta consulta) {
+    public Consulta atualizar(@PathVariable Long id, @Valid @RequestBody Consulta consulta) {
         return service.atualizar(id, consulta);
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/medico/{medicoId}")
