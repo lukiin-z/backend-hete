@@ -3,12 +3,14 @@ package com.fiap.ec.backend_consultas.controller;
 import com.fiap.ec.backend_consultas.model.Especialidade;
 import com.fiap.ec.backend_consultas.service.EspecialidadeService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/especialidades")
-@CrossOrigin
 public class EspecialidadeController {
 
     private final EspecialidadeService service;
@@ -18,7 +20,8 @@ public class EspecialidadeController {
     }
 
     @PostMapping
-    public Especialidade criar(@RequestBody Especialidade especialidade) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Especialidade criar(@Valid @RequestBody Especialidade especialidade) {
         return service.salvar(especialidade);
     }
 
@@ -30,5 +33,16 @@ public class EspecialidadeController {
     @GetMapping("/{id}")
     public Especialidade buscarPorId(@PathVariable Long id) {
         return service.buscarPorId(id);
+    }
+
+    @PutMapping("/{id}")
+    public Especialidade atualizar(@PathVariable Long id, @Valid @RequestBody Especialidade especialidade) {
+        return service.atualizar(id, especialidade);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

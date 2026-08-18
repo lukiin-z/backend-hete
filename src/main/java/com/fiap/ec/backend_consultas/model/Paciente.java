@@ -1,6 +1,9 @@
 package com.fiap.ec.backend_consultas.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
@@ -10,15 +13,21 @@ public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     @Column(nullable = false)
     private String nome;
-    @Column(nullable = false, unique = true)
+    @NotBlank
+    @Column(nullable = false, unique = true, length = 14)
     private String cpf;
-    @Column(nullable = false)
+    @NotBlank
+    @Email
+    @Column(nullable = false, unique = true)
     private String email;
     private String telefone;
     private LocalDate dataNascimento;
-    private Boolean ativo;
+    @Column(nullable = false)
+    @NotNull
+    private Boolean ativo = true;
 
     public Paciente() {
     }

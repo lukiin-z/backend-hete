@@ -1,6 +1,7 @@
 package com.fiap.ec.backend_consultas.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "especialidades")
@@ -8,7 +9,8 @@ public class Especialidade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @NotBlank
+    @Column(nullable = false, unique = true)
     private String nome;
     private String descricao;
 
@@ -29,6 +31,10 @@ public class Especialidade {
 
     public String getDescricao() {
         return descricao;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setNome(String nome) {

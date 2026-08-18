@@ -2,6 +2,7 @@ package com.fiap.ec.backend_consultas.service;
 
 import com.fiap.ec.backend_consultas.model.Especialidade;
 import com.fiap.ec.backend_consultas.repository.EspecialidadeRepository;
+import com.fiap.ec.backend_consultas.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class EspecialidadeService {
 
     public Especialidade buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Especialidade", id));
     }
 
     public Especialidade atualizar(Long id, Especialidade especialidadeAtualizada) {

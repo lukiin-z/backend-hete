@@ -1,15 +1,20 @@
 package com.fiap.ec.backend_consultas.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "consultas")
@@ -19,21 +24,29 @@ public class Consulta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     @JoinColumn(name = "medico_id", nullable = false)
     private Medico medico;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(optional = false)
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
+    @NotNull
     @Column(nullable = false)
     private LocalDateTime dataHora;
 
-    @Column(nullable = false)
-    private String status;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private StatusConsulta status = StatusConsulta.AGENDADA;
 
-    private Double valor;
+    @NotNull
+    @DecimalMin("0.0")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valor;
 
     private String observacoes;
 
@@ -41,7 +54,7 @@ public class Consulta {
     }
 
     public Consulta(Medico medico, Paciente paciente, LocalDateTime dataHora,
-                    String status, Double valor, String observacoes) {
+                    StatusConsulta status, BigDecimal valor, String observacoes) {
         this.medico = medico;
         this.paciente = paciente;
         this.dataHora = dataHora;
@@ -66,11 +79,11 @@ public class Consulta {
         return dataHora;
     }
 
-    public String getStatus() {
+    public StatusConsulta getStatus() {
         return status;
     }
 
-    public Double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
@@ -94,11 +107,11 @@ public class Consulta {
         this.dataHora = dataHora;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusConsulta status) {
         this.status = status;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 
