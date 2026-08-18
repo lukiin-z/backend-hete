@@ -1,96 +1,109 @@
-# 📌 Sobre o Projeto
+# Backend de consultas médicas
 
-Este projeto foi desenvolvido como parte da disciplina **Advanced Programming e Mobile Development**.
-O objetivo é criar um **backend para gerenciamento de consultas médicas**, permitindo o cadastro e manutenção de **pacientes** e **especialidades**, além de operações básicas de **CRUD**.
+API REST para cadastro de especialidades, médicos, pacientes e consultas. O projeto foi desenvolvido em Java 17 com Spring Boot, Spring Web MVC, Spring Data JPA e H2.
 
----
+## Funcionalidades
 
-# 🚀 Tecnologias Utilizadas
+- CRUD de especialidades, médicos, pacientes e consultas;
+- filtros de consultas por médico e por paciente;
+- validação dos dados recebidos;
+- respostas `404` para recursos inexistentes;
+- persistência local em H2;
+- CORS configurável por variável de ambiente.
 
-* Java 17
-* Spring Boot *(estrutura inicial gerada pelo Spring Initializr)*
-* Maven *(gerenciamento de dependências)*
-* Spring Web *(para criação da API REST)*
-* Spring Data JPA *(para persistência de dados)*
-* Banco de dados configurável *(H2, MySQL ou outro, conforme ajustes futuros)*
+## Requisitos
 
----
+- JDK 17;
+- nenhuma instalação global do Maven é necessária: o projeto inclui Maven Wrapper.
 
-# 📂 Estrutura do Projeto
-
-```
-src/main/java
- ├── entities        → Paciente, Especialidade
- ├── controllers     → Endpoints REST para manipulação dos dados
- ├── services        → Regras de negócio
- └── repositories    → Interfaces JPA para persistência
-
-src/main/resources   → Configurações (application.properties)
-
-data/                → Scripts ou dados auxiliares
-
-pom.xml              → Configuração do Maven
-```
-
----
-
-# ⚙️ Funcionalidades Implementadas
-
-## Pacientes
-
-* Criar novo paciente (**POST**)
-* Listar pacientes (**GET**)
-* Atualizar paciente (**PUT**)
-* Deletar paciente (**DELETE**)
-
-## Especialidades
-
-* Criar nova especialidade (**POST**)
-* Listar especialidades (**GET**)
-* Atualizar especialidade (**PUT**)
-* Deletar especialidade (**DELETE**)
-
----
-
-# 📡 Endpoints Principais
-
-| Método | Endpoint             | Descrição               |
-| ------ | -------------------- | ----------------------- |
-| POST   | /pacientes           | Cadastrar paciente      |
-| GET    | /pacientes           | Listar pacientes        |
-| PUT    | /pacientes/{id}      | Atualizar paciente      |
-| DELETE | /pacientes/{id}      | Remover paciente        |
-| POST   | /especialidades      | Cadastrar especialidade |
-| GET    | /especialidades      | Listar especialidades   |
-| PUT    | /especialidades/{id} | Atualizar especialidade |
-| DELETE | /especialidades/{id} | Remover especialidade   |
-
----
-
-# ▶️ Como Executar
-
-### 1️⃣ Clone o repositório
+## Executando
 
 ```bash
-git clone https://github.com/An4lu/backend-consultas.git
-```
-
-### 2️⃣ Acesse a pasta do projeto
-
-```bash
-cd backend-consultas
-```
-
-### 3️⃣ Compile e rode a aplicação
-
-```bash
+git clone https://github.com/lukiin-z/backend-hete.git
+cd backend-hete
 ./mvnw spring-boot:run
 ```
 
-### 4️⃣ A API estará disponível em
+No Windows, use `mvnw.cmd spring-boot:run`. A API inicia em `http://localhost:8080` e o console H2 fica em `http://localhost:8080/h2-console`.
 
-```
-http://localhost:8080
+Configuração padrão do H2:
+
+- JDBC URL: `jdbc:h2:file:./data/consultas`
+- usuário: `sa`
+- senha: vazia
+
+O banco é criado em `data/` e não é versionado.
+
+## Endpoints
+
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| `GET` | `/especialidades` | Lista especialidades |
+| `GET` | `/especialidades/{id}` | Busca uma especialidade |
+| `POST` | `/especialidades` | Cria uma especialidade |
+| `PUT` | `/especialidades/{id}` | Atualiza uma especialidade |
+| `DELETE` | `/especialidades/{id}` | Exclui uma especialidade |
+| `GET` | `/medicos` | Lista médicos |
+| `GET` | `/medicos/{id}` | Busca um médico |
+| `POST` | `/medicos` | Cria um médico |
+| `PUT` | `/medicos/{id}` | Atualiza um médico |
+| `DELETE` | `/medicos/{id}` | Exclui um médico |
+| `GET` | `/pacientes` | Lista pacientes |
+| `GET` | `/pacientes/{id}` | Busca um paciente |
+| `POST` | `/pacientes` | Cria um paciente |
+| `PUT` | `/pacientes/{id}` | Atualiza um paciente |
+| `DELETE` | `/pacientes/{id}` | Exclui um paciente |
+| `GET` | `/consultas` | Lista consultas |
+| `GET` | `/consultas/{id}` | Busca uma consulta |
+| `GET` | `/consultas/medico/{id}` | Filtra por médico |
+| `GET` | `/consultas/paciente/{id}` | Filtra por paciente |
+| `POST` | `/consultas` | Agenda uma consulta |
+| `PUT` | `/consultas/{id}` | Atualiza uma consulta |
+| `DELETE` | `/consultas/{id}` | Exclui uma consulta |
+
+Os status aceitos são `agendada`, `confirmada`, `cancelada` e `realizada`.
+
+### Exemplo de consulta
+
+Médico e paciente devem existir antes do agendamento:
+
+```json
+{
+  "medico": { "id": 1 },
+  "paciente": { "id": 1 },
+  "dataHora": "2026-08-20T10:00:00",
+  "status": "agendada",
+  "valor": 250.00,
+  "observacoes": "Consulta de rotina"
+}
 ```
 
----
+## Configuração
+
+Para liberar outras origens do frontend, informe uma lista separada por vírgulas:
+
+```bash
+CORS_ALLOWED_ORIGINS=http://localhost:8081,http://192.168.0.10:8081
+```
+
+## Testes
+
+```bash
+./mvnw test
+```
+
+## Estrutura
+
+```text
+src/
+├── main/
+│   ├── java/com/fiap/ec/backend_consultas/
+│   │   ├── config/
+│   │   ├── controller/
+│   │   ├── exception/
+│   │   ├── model/
+│   │   ├── repository/
+│   │   └── service/
+│   └── resources/application.properties
+└── test/java/com/fiap/ec/backend_consultas/
+```
