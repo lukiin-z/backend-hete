@@ -101,6 +101,14 @@ class BackendConsultasApplicationTests {
                 .hasMessageContaining("Transição de status inválida");
     }
 
+    @Test
+    void deveLocalizarCadastrosParaOsFluxosDeLogin() {
+        assertThat(medicoService.buscarPorCrm(medico.getCrm().toLowerCase())).isEqualTo(medico);
+        assertThat(medicoService.listarPorEspecialidade(medico.getEspecialidade().getId()))
+                .contains(medico);
+        assertThat(pacienteService.buscarPorCpf(paciente.getCpf())).isEqualTo(paciente);
+    }
+
     private Consulta criarConsulta(Long medicoId, Long pacienteId, LocalDateTime dataHora) {
         return consultaService.criar(new ConsultaCreateRequest(
                 medicoId,

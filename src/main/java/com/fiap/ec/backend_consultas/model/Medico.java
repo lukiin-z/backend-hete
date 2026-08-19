@@ -1,6 +1,9 @@
 package com.fiap.ec.backend_consultas.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,16 +26,25 @@ public class Medico {
     @Column(nullable = false)
     @NotNull
     private Boolean ativo = true;
+    @DecimalMin("0.0")
+    @Column(precision = 10, scale = 2)
+    private BigDecimal valorConsulta;
 
     public Medico() {
     }
 
     public Medico(Long id, String nome, String crm, Especialidade especialidade, Boolean ativo) {
+        this(id, nome, crm, especialidade, ativo, null);
+    }
+
+    public Medico(Long id, String nome, String crm, Especialidade especialidade,
+                  Boolean ativo, BigDecimal valorConsulta) {
         this.id = id;
         this.nome = nome;
         this.crm = crm;
         this.especialidade = especialidade;
         this.ativo = ativo;
+        this.valorConsulta = valorConsulta;
     }
 
     public Long getId() {
@@ -55,6 +67,10 @@ public class Medico {
         return ativo;
     }
 
+    public BigDecimal getValorConsulta() {
+        return valorConsulta;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -73,5 +89,9 @@ public class Medico {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public void setValorConsulta(BigDecimal valorConsulta) {
+        this.valorConsulta = valorConsulta;
     }
 }

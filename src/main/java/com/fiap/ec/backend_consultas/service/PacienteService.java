@@ -16,6 +16,7 @@ public class PacienteService {
     }
 
     public Paciente salvar(Paciente paciente) {
+        paciente.setCpf(normalizarCpf(paciente.getCpf()));
         return repository.save(paciente);
     }
 
@@ -28,10 +29,19 @@ public class PacienteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Paciente", id));
     }
 
+    public Paciente buscarPorCpf(String cpf) {
+        String cpfNormalizado = normalizarCpf(cpf);
+        return repository.findByCpf(cpfNormalizado)
+                .orElseGet(() -> repository.findAll().stream()
+                        .filter(paciente -> normalizarCpf(paciente.getCpf()).equals(cpfNormalizado))
+                        .findFirst()
+                        .orElseThrow(() -> new ResourceNotFoundException("Paciente com CPF " + cpf)));
+    }
+
     public Paciente atualizar(Long id, Paciente pacienteAtualizado){
         Paciente pacienteExistente = buscarPorId(id);
         pacienteExistente.setNome(pacienteAtualizado.getNome());
-        pacienteExistente.setCpf(pacienteAtualizado.getCpf());
+        pacienteExistente.setCpf(normalizarCpf(pacienteAtualizado.getCpf()));
         pacienteExistente.setEmail(pacienteAtualizado.getEmail());
         pacienteExistente.setTelefone(pacienteAtualizado.getTelefone());
         pacienteExistente.setDataNascimento(pacienteAtualizado.getDataNascimento());
@@ -42,5 +52,9 @@ public class PacienteService {
     public void deletar(Long id){
         Paciente paciente = buscarPorId(id);
         repository.delete(paciente);
+    }
+
+    private String normalizarCpf(String cpf) {
+        return cpf == null ? "" : cpf.replaceAll("\\D", "");
     }
 }

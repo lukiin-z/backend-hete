@@ -53,20 +53,22 @@ public class DevelopmentDataLoader implements CommandLineRunner {
                 new Especialidade("Dermatologia", "Diagnóstico e tratamento da pele"));
 
         Medico ana = medicoRepository.save(
-                new Medico(null, "Dra. Ana Martins", "CRM-SP 123456", cardiologia, true));
+                new Medico(null, "Dra. Ana Martins", "CRM-SP 123456", cardiologia, true,
+                        new BigDecimal("250.00")));
         Medico caio = medicoRepository.save(
-                new Medico(null, "Dr. Caio Ribeiro", "CRM-SP 654321", dermatologia, true));
+                new Medico(null, "Dr. Caio Ribeiro", "CRM-SP 654321", dermatologia, true,
+                        new BigDecimal("320.00")));
 
         Paciente joao = pacienteRepository.save(new Paciente(
                 "João Silva",
-                "123.456.789-00",
+                "12345678900",
                 "joao@example.com",
                 "11999999999",
                 LocalDate.of(1990, 1, 15),
                 true));
         Paciente maria = pacienteRepository.save(new Paciente(
                 "Maria Santos",
-                "987.654.321-00",
+                "98765432100",
                 "maria@example.com",
                 "11988888888",
                 LocalDate.of(1987, 6, 10),
