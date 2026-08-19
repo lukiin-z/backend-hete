@@ -26,7 +26,8 @@ public record ConsultaResponse(
                         new EspecialidadeResumo(
                                 consulta.getMedico().getEspecialidade().getId(),
                                 consulta.getMedico().getEspecialidade().getNome()),
-                        consulta.getMedico().getAtivo()),
+                        consulta.getMedico().getAtivo(),
+                        consulta.getMedico().getValorConsulta()),
                 new PacienteResumo(
                         consulta.getPaciente().getId(),
                         consulta.getPaciente().getNome(),
@@ -49,7 +50,8 @@ public record ConsultaResponse(
             String nome,
             String crm,
             EspecialidadeResumo especialidade,
-            Boolean ativo) {
+            Boolean ativo,
+            BigDecimal valorConsulta) {
     }
 
     public record PacienteResumo(

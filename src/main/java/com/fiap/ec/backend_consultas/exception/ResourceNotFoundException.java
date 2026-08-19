@@ -9,4 +9,8 @@ public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String resource, Long id) {
         super(resource + " não encontrado(a): " + id);
     }
+
+    public ResourceNotFoundException(String message) {
+        super(message + " não encontrado(a)");
+    }
 }

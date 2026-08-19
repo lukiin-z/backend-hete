@@ -28,6 +28,16 @@ public class MedicoController {
         return service.buscarPorId(id);
     }
 
+    @GetMapping("/crm/{crm}")
+    public Medico buscarPorCrm(@PathVariable String crm) {
+        return service.buscarPorCrm(crm);
+    }
+
+    @GetMapping("/especialidade/{especialidadeId}")
+    public List<Medico> listarPorEspecialidade(@PathVariable Long especialidadeId) {
+        return service.listarPorEspecialidade(especialidadeId);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Medico salvar(@Valid @RequestBody Medico medico) {

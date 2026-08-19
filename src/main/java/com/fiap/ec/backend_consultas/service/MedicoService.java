@@ -30,6 +30,18 @@ public class MedicoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Médico", id));
     }
 
+    public Medico buscarPorCrm(String crm) {
+        return repository.findByCrmIgnoreCase(crm.trim())
+                .orElseThrow(() -> new ResourceNotFoundException("Médico com CRM " + crm));
+    }
+
+    public List<Medico> listarPorEspecialidade(Long especialidadeId) {
+        if (!especialidadeRepository.existsById(especialidadeId)) {
+            throw new ResourceNotFoundException("Especialidade", especialidadeId);
+        }
+        return repository.findByEspecialidadeIdAndAtivoTrueOrderByNomeAsc(especialidadeId);
+    }
+
     public Medico salvar(Medico medico) {
         medico.setEspecialidade(buscarEspecialidade(medico));
         return repository.save(medico);
@@ -41,6 +53,7 @@ public class MedicoService {
         medicoExistente.setCrm(medicoAtualizado.getCrm());
         medicoExistente.setEspecialidade(buscarEspecialidade(medicoAtualizado));
         medicoExistente.setAtivo(medicoAtualizado.getAtivo());
+        medicoExistente.setValorConsulta(medicoAtualizado.getValorConsulta());
         return repository.save(medicoExistente);
     }
 
