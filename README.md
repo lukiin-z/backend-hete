@@ -6,6 +6,8 @@ API REST para cadastro de especialidades, médicos, pacientes e consultas. O pro
 
 - CRUD de especialidades, médicos, pacientes e consultas;
 - filtros de consultas por médico e por paciente;
+- acesso acadêmico de pacientes por CPF e médicos por CRM;
+- filtro de médicos ativos por especialidade e valor de consulta;
 - DTOs de entrada e saída, sem expor diretamente as entidades JPA;
 - validação de dados, datas futuras e regras de negócio;
 - bloqueio de choque de horário para médico ou paciente;
@@ -36,6 +38,8 @@ Para iniciar com médicos, pacientes e consultas de demonstração:
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
+O perfil `dev` usa H2 em memória e recria uma demonstração limpa a cada execução. Acesse como paciente com CPF `12345678900` ou como médica com CRM `CRM-SP 123456`.
+
 Configuração padrão do H2:
 
 - JDBC URL: `jdbc:h2:file:./data/consultas`
@@ -55,11 +59,14 @@ O banco é criado em `data/` e não é versionado.
 | `DELETE` | `/especialidades/{id}` | Exclui uma especialidade |
 | `GET` | `/medicos` | Lista médicos |
 | `GET` | `/medicos/{id}` | Busca um médico |
+| `GET` | `/medicos/crm/{crm}` | Busca um médico pelo CRM |
+| `GET` | `/medicos/especialidade/{id}` | Lista médicos ativos da especialidade |
 | `POST` | `/medicos` | Cria um médico |
 | `PUT` | `/medicos/{id}` | Atualiza um médico |
 | `DELETE` | `/medicos/{id}` | Exclui um médico |
 | `GET` | `/pacientes` | Lista pacientes |
 | `GET` | `/pacientes/{id}` | Busca um paciente |
+| `GET` | `/pacientes/cpf/{cpf}` | Busca um paciente pelo CPF |
 | `POST` | `/pacientes` | Cria um paciente |
 | `PUT` | `/pacientes/{id}` | Atualiza um paciente |
 | `DELETE` | `/pacientes/{id}` | Exclui um paciente |
